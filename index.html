@@ -4,94 +4,217 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>车辆挪车联系</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#f5f6f8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;color:#222}
-.wrap{max-width:460px;margin:0 auto;min-height:100vh;padding:28px 18px 36px}
-.card{background:#fff;border-radius:20px;padding:28px 20px;box-shadow:0 6px 24px rgba(0,0,0,.06);text-align:center}
-.icon{font-size:48px}
-h1{font-size:24px;margin:12px 0 8px}
-.sub{color:#999;font-size:14px;margin-bottom:24px}
-.info{background:#f7f8fa;border-radius:16px;padding:18px;margin-bottom:14px}
-.label{font-size:13px;color:#999;margin-bottom:7px}
-.value{font-size:25px;font-weight:700;letter-spacing:1px}
-.phone{font-size:22px}
-button{width:100%;border:0;border-radius:14px;padding:15px;font-size:17px;font-weight:600;cursor:pointer;margin-top:10px}
-.call{background:#4fc46b;color:#fff}
-.notify{background:#f0f1f3;color:#333}
-.tip{font-size:12px;color:#aaa;line-height:1.8;margin-top:22px}
-.toast{position:fixed;left:50%;bottom:45px;transform:translateX(-50%);background:rgba(0,0,0,.78);color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;display:none}
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  background:#f5f6f8;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+  color:#222
+}
+
+.wrap{
+  max-width:460px;
+  margin:0 auto;
+  min-height:100vh;
+  padding:28px 18px 36px
+}
+
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:28px 20px;
+  box-shadow:0 6px 24px rgba(0,0,0,.06);
+  text-align:center
+}
+
+.icon{
+  font-size:48px
+}
+
+h1{
+  font-size:24px;
+  margin:12px 0 8px
+}
+
+.sub{
+  color:#999;
+  font-size:14px;
+  margin-bottom:24px
+}
+
+.info{
+  background:#f7f8fa;
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:14px
+}
+
+.label{
+  font-size:13px;
+  color:#999;
+  margin-bottom:7px
+}
+
+.value{
+  font-size:25px;
+  font-weight:700;
+  letter-spacing:1px
+}
+
+.phone{
+  font-size:22px
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:15px;
+  font-size:17px;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:10px
+}
+
+.call{
+  background:#4fc46b;
+  color:#fff
+}
+
+.tip{
+  font-size:12px;
+  color:#aaa;
+  line-height:1.8;
+  margin-top:22px
+}
 </style>
 </head>
+
 <body>
+
 <div class="wrap">
+
   <div class="card">
+
     <div class="icon">🚗</div>
+
     <h1>车辆挪车联系</h1>
-    <div class="sub">您正在联系该车辆车主</div>
 
-    <div class="info">
-      <div class="label">车牌号码</div>
-      <div class="value" id="plate">加载中...</div>
+    <div class="sub">
+      您正在联系该车辆车主
     </div>
 
     <div class="info">
-      <div class="label">车主联系电话</div>
-      <div class="value phone" id="phone">加载中...</div>
+      <div class="label">
+        车牌号码
+      </div>
+
+      <div class="value" id="plate">
+        加载中...
+      </div>
     </div>
 
-    <button class="call" onclick="callOwner()">📞 拨打电话</button>
-    <button class="notify" onclick="notifyOwner()">🔔 通知车主</button>
+    <div class="info">
+      <div class="label">
+        车主联系电话
+      </div>
+
+      <div class="value phone" id="phone">
+        加载中...
+      </div>
+    </div>
+
+    <button class="call" onclick="callOwner()">
+      📞 拨打电话
+    </button>
 
     <div class="tip">
       请文明沟通，安全驾驶<br>
       本页面仅用于车辆挪车联系
     </div>
+
   </div>
+
 </div>
 
-<div class="toast" id="toast"></div>
-
 <script>
+
 // 无后台演示版：两辆车的信息直接写在网页中。
 // 正式版如果需要保护手机号，建议改成“网页 + 后端数据库”。
+
 const cars = {
-  CAR_000001: { plate: "鲁F·UQ377", phone: "13964587850" },
-  CAR_000002: { plate: "鲁F·UH962", phone: "18660089970" }
+
+  CAR_000001: {
+    plate: "鲁F·UQ377",
+    phone: "13964587850"
+  },
+
+  CAR_000002: {
+    plate: "鲁F·UH962",
+    phone: "18660089970"
+  }
+
 };
 
+
+// 获取二维码中的 carId
 const params = new URLSearchParams(location.search);
-const carId = params.get("carId") || "CAR_000001";
+
+const carId =
+  params.get("carId") || "CAR_000001";
+
 const car = cars[carId];
 
+
+// 手机号脱敏
 function maskPhone(phone){
-  return phone.length >= 7 ? phone.slice(0,3) + " **** " + phone.slice(-4) : phone;
+
+  return phone.length >= 7
+    ? phone.slice(0,3) + " **** " + phone.slice(-4)
+    : phone;
+
 }
 
+
+// 显示车辆信息
 if(car){
-  document.getElementById("plate").textContent = car.plate;
-  document.getElementById("phone").textContent = maskPhone(car.phone);
-  document.title = car.plate + " - 挪车联系";
+
+  document.getElementById("plate").textContent =
+    car.plate;
+
+  document.getElementById("phone").textContent =
+    maskPhone(car.phone);
+
+  document.title =
+    car.plate + " - 挪车联系";
+
 }else{
-  document.getElementById("plate").textContent = "未找到车辆";
-  document.getElementById("phone").textContent = "请检查二维码";
+
+  document.getElementById("plate").textContent =
+    "未找到车辆";
+
+  document.getElementById("phone").textContent =
+    "请检查二维码";
+
 }
 
+
+// 拨打车主电话
 function callOwner(){
+
   if(!car) return;
-  location.href = "tel:" + car.phone;
+
+  location.href =
+    "tel:" + car.phone;
+
 }
 
-function notifyOwner(){
-  showToast("已记录通知请求（演示版）");
-}
-
-function showToast(msg){
-  const el=document.getElementById("toast");
-  el.textContent=msg;
-  el.style.display="block";
-  setTimeout(()=>el.style.display="none",2200);
-}
 </script>
+
 </body>
 </html>
